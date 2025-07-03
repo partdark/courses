@@ -4,13 +4,14 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["courses.csproj", "."]
-RUN dotnet restore "courses.csproj"
+COPY courses/courses.csproj courses/
+RUN dotnet restore courses/courses.csproj
 COPY . .
-RUN dotnet build "courses.csproj" -c Release -o /app/build
+WORKDIR /src/courses
+RUN dotnet build courses.csproj -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "courses.csproj" -c Release -o /app/publish
+RUN dotnet publish courses.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
